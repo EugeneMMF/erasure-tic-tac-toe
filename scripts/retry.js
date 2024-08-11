@@ -81,41 +81,41 @@ function getWinType(arr) {
     for (let i=0; i<=6; i+=3) {
         sum = arr[i] + arr[i+1] + arr[i+2];
         if (sum === 3) {
-            return 1;
+            return [1, "horizontal", Math.floor(i/3)];
         } else if (sum == -3) {
-            return -1;
+            return [-1, "horizontal", Math.floor(i/3)];
         }
     }
     // check vertical wins
     for (let i=0; i<3; i++) {
         sum = arr[i] + arr[i+3] + arr[i+6];
         if (sum === 3) {
-            return 1;
+            return [1, "vertical", i];
         } else if (sum == -3) {
-            return -1;
+            return [-1, "vertical", i];
         }
     }
     // check main diagonal
     sum = arr[0] + arr[4] + arr[8];
     if (sum === 3) {
-        return 1;
+        return [1, "diagonal", 0];
     } else if (sum == -3) {
-        return -1;
+        return [-1, "diagonal", 0];
     }
-    // check main diagonal
+    // check secondary diagonal
     sum = arr[2] + arr[4] + arr[6];
     if (sum === 3) {
-        return 1;
+        return [1, "diagonal", 1];
     } else if (sum == -3) {
-        return -1;
+        return [-1, "diagonal", 1];
     }
     // check if the entire grid is full
     for (let i=0; i<9; i++) {
         if (arr[i] === 0) {
-            return 2; // the cell is not occupied
+            return [2, "no", 0]; // the cell is not occupied
         }
     }
-    return 0; // it is a draw
+    return [0, "draw", 0]; // it is a draw
 }
 
 function getPlayer(arr) {
@@ -313,6 +313,96 @@ function getArray() {
     return arr;
 }
 
+function renderEnd(arr, userPlayer, actualPlay) {
+    let [sol, direction, type] = getWinType(arr);
+    console.log(sol, direction, type);
+    if (actualPlay) {
+        if (sol == userPlayer) {
+            const result = document.getElementById('result');
+            result.setAttribute('class', 'winner');
+            document.getElementsByTagName('body')[0].setAttribute("class", "greenborderpermanent");
+            result.hidden = false;
+            result.innerText = ":) Congradulations! You Won! :)";
+        } else if (sol == 0) {
+            const result = document.getElementById('result');
+            result.setAttribute('class','draw');
+            document.getElementsByTagName('body')[0].setAttribute("class", "greyborderpermanent");
+            result.hidden = false;
+            result.innerText = ":| Draw! :|";
+        } else {
+            const result = document.getElementById('result');
+            result.setAttribute('class','loser');
+            document.getElementsByTagName('body')[0].setAttribute("class", "redborderpermanent");
+            result.innerText = ":( Sorry! Computer wins! :(";
+            result.hidden = false;
+        }
+        const cells = document.getElementsByClassName('cell');
+        for (let cell of cells) {
+            cell.disabled = true;
+        }
+        document.getElementById('playValue').setAttribute('value',"");
+    }
+    if (sol != 2) {
+        let canvas = document.getElementById('helper');
+        let context = canvas.getContext('2d');
+        let canvasWidth = canvas.width;
+        let canvasHeight = canvas.height;
+        context.clearRect(0, 0, canvasWidth, canvasHeight);
+        if (sol == 0) {
+            return;
+        } else {
+            if (!actualPlay) {
+                if (sol != userPlayer) {
+                    context.strokeStyle = "#ff0000";
+                    let caution = document.getElementById('caution');
+                    let grid = document.getElementById("grid");
+                    caution.innerText = "You will lose!";
+                    caution.setAttribute('class', "losertext");
+                    grid.setAttribute('class', "container zoominout");
+                    document.getElementsByTagName('body')[0].setAttribute("class", "redborder");
+                    caution.removeAttribute("hidden");
+                } else {
+                    context.strokeStyle = "#00ff00";
+                    let caution = document.getElementById('caution');
+                    caution.innerText = "You will win!"
+                    caution.setAttribute('class', "winner");
+                    document.getElementsByTagName('body')[0].setAttribute("class", "greenborder");
+                    caution.removeAttribute("hidden");
+                }
+            }
+            if (sol != userPlayer) {
+                context.strokeStyle = "#ff0000";
+            } else {
+                context.strokeStyle = "#00ff00";
+            }
+            context.beginPath();
+            if (direction == "diagonal") {
+                if (type == 0) {
+                    // main diagonal
+                    context.moveTo(0, 0);
+                    context.lineTo(canvasWidth, canvasHeight);
+                    context.stroke();
+                } else {
+                    // secondary diagonal
+                    context.moveTo(canvasWidth, 0);
+                    context.lineTo(0, canvasHeight);
+                    context.stroke();
+                }
+            } else if (direction == "vertical") {
+                let location = Math.floor(type * (canvasWidth/3) + (canvasWidth/6));
+                context.moveTo(location, 0);
+                context.lineTo(location, canvasHeight);
+                context.stroke();
+            } else if (direction == "horizontal") {
+                let location = Math.floor(type * (canvasHeight/3) + (canvasHeight/6));
+                context.moveTo(0, location);
+                context.lineTo(canvasWidth, location);
+                context.stroke();
+            }
+        }
+    }
+}
+
 function play(cellNumber) {
     const cells = document.getElementsByClassName('cell');
     let arr = getArray();
@@ -358,7 +448,8 @@ function play(cellNumber) {
         player *= -1;
         let bestPlay = getBestPlay(arr, xPlays, oPlays, ALLOWABLE_PLAYS, 0, maxForesight, player);
         if (bestPlay instanceof Object) {
-            console.log("winner:", bestPlay[0]);
+            console.log("Type1 winner:", bestPlay[0]);
+            renderEnd(arr, player*-1, true);
             return;
         }
         console.log("bestPlay:",bestPlay)
@@ -388,7 +479,8 @@ function play(cellNumber) {
         }
         let winner = isEnd(arr);
         if (winner !== 2) {
-            console.log("winner:", winner);
+            renderEnd(arr, player*-1, true);
+            console.log("Type2 winner:", winner);
             return;
         }
         let myString = "";
