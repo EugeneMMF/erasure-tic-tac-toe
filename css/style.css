@@ -205,6 +205,11 @@ td {
     grid-column: 4/ span 1;
     grid-row: 4/ span 1;
 }
+
+.temporary {
+    color:rgba(0, 0, 0, 0.75);
+}
+
 #result {
     padding: 10px;
     text-align: center;
