@@ -25,6 +25,10 @@
             <ul>
                 <li><button type="button" id="new-game" onclick="newgame()">New Game</button></li>
             </ul>
+            <ul id="option" hidden>
+                <li><button type="button" onclick="playAsX()">Play as X</button></li>
+                <li><button type="button" onclick="playAsO()">Play as O</button></li>
+            </ul>
             <ul>
                 <li>
                     <label for="level">Difficulty</label><br>
@@ -40,14 +44,16 @@
                     </datalist>
                 </li>
                 <li>
-                    <label for="assisted">Assisted</label>
-                    <input type="checkbox" name="asssisted" id="assisted">
+                    <fieldset>
+                        <legend>Select an assistance level</legend>
+                        <input type="radio" name="assisted" id="noAssist">
+                        <label for="noAssist">No Assistance</label>
+                        <input type="radio" name="assisted" id="assisted">
+                        <label for="assisted">Lightly Assisted</label>
+                        <input type="radio" name="assisted" id="superAssisted">
+                        <label for="superAssisted">Heavily Assisted</label>
+                    </fieldset>
                 </li>
-            </ul>
-            <ul id="option" hidden>
-                <li><button type="button" onclick="playAsX()">Play as X</button></li>
-                <pre></pre>
-                <li><button type="button" onclick="playAsO()">Play as O</button></li>
             </ul>
         </div>
         <input type="hidden" name="value" id="playValue" value="">
