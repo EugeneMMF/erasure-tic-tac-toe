@@ -322,18 +322,18 @@ function renderEnd(arr, userPlayer, actualPlay) {
             result.setAttribute('class', 'winner');
             document.getElementsByTagName('body')[0].setAttribute("class", "greenborderpermanent");
             result.hidden = false;
-            result.innerText = ":) Congradulations! You Won! :)";
+            result.innerText = "😊 Congradulations! You Won! 😊";
         } else if (sol == 0) {
             const result = document.getElementById('result');
             result.setAttribute('class','draw');
             document.getElementsByTagName('body')[0].setAttribute("class", "greyborderpermanent");
             result.hidden = false;
-            result.innerText = ":| Draw! :|";
+            result.innerText = "😮‍💨 Draw! 😮‍💨";
         } else {
             const result = document.getElementById('result');
             result.setAttribute('class','loser');
             document.getElementsByTagName('body')[0].setAttribute("class", "redborderpermanent");
-            result.innerText = ":( Sorry! Computer wins! :(";
+            result.innerText = "☹️ Sorry! Computer wins! ☹️";
             result.hidden = false;
         }
         const cells = document.getElementsByClassName('cell');
@@ -407,89 +407,98 @@ function play(cellNumber) {
     const cells = document.getElementsByClassName('cell');
     let arr = getArray();
     console.log(arr);
-    let player = getPlayer(arr);
+    let player; // = getPlayer(arr);
     let playerLetter = document.getElementById('playValue').value;
     let computerLetter = document.getElementById('compValue').value;
     let maxForesight = Number(document.getElementById('level').value);
     const xPlaysElement = document.getElementById('xPlays');
     const oPlaysElement = document.getElementById('oPlays');
-    if ((player === 1 && playerLetter !== "X") || (player === -1 && playerLetter !== "O")) {
-        throw Error("Disjoint relation between document and grid values.");
+    if (playerLetter === "X") {
+        player = 1;
     } else {
-        let xPlays = [...xPlaysElement.value];
-        let oPlays = [...oPlaysElement.value];
-        xPlays = xPlays.map((value) => { return Number(value); });
-        oPlays = oPlays.map((value) => { return Number(value); });
-        let firstValue;
-        arr[cellNumber] = player;
-        cells[cellNumber].innerText = playerLetter;
-        cells[cellNumber].disabled = true;
-        if (playerLetter === "X") {
-            xPlays.push(cellNumber);
-        } else {
-            oPlays.push(cellNumber);
-        }
-        if (xPlays.length > ALLOWABLE_PLAYS) {
-            [firstValue, ...xPlays] = [...xPlays];
-            cells[firstValue].innerText = "";
-            cells[firstValue].disabled = false;
-            arr[firstValue] = 0;
-            cells[firstValue].setAttribute("class", `cell cell${firstValue}`);
-            cells[xPlays[0]].setAttribute("class", `cell cell${xPlays[0]} toremove`);
-        }
-        if (oPlays.length > ALLOWABLE_PLAYS) {
-            [firstValue, ...oPlays] = [...oPlays];
-            cells[firstValue].innerText = "";
-            arr[firstValue] = 0;
-            cells[firstValue].disabled = false;
-            cells[firstValue].setAttribute("class", `cell cell${firstValue}`);
-            cells[oPlays[0]].setAttribute("class", `cell cell${oPlays[0]} toremove`);
-        }
-        player *= -1;
-        let bestPlay = getBestPlay(arr, xPlays, oPlays, ALLOWABLE_PLAYS, 0, maxForesight, player);
-        if (bestPlay instanceof Object) {
-            console.log("Type1 winner:", bestPlay[0]);
-            renderEnd(arr, player*-1, true);
-            return;
-        }
-        console.log("bestPlay:",bestPlay)
-        arr[bestPlay] = player;
-        cells[bestPlay].innerText = computerLetter;
-        cells[bestPlay].disabled = true;
-        if (playerLetter === "X") {
-            oPlays.push(bestPlay);
-        } else {
-            xPlays.push(bestPlay);
-        }
-        if (xPlays.length > ALLOWABLE_PLAYS) {
-            [firstValue, ...xPlays] = [...xPlays];
-            cells[firstValue].innerText = "";
-            cells[firstValue].disabled = false;
-            arr[firstValue] = 0;
-            cells[firstValue].setAttribute("class", `cell cell${firstValue}`);
-            cells[xPlays[0]].setAttribute("class", `cell cell${xPlays[0]} toremove`);
-        }
-        if (oPlays.length > ALLOWABLE_PLAYS) {
-            [firstValue, ...oPlays] = [...oPlays];
-            cells[firstValue].innerText = "";
-            cells[firstValue].disabled = false;
-            arr[firstValue] = 0;
-            cells[firstValue].setAttribute("class", `cell cell${firstValue}`);
-            cells[oPlays[0]].setAttribute("class", `cell cell${oPlays[0]} toremove`);
-        }
-        let winner = isEnd(arr);
-        if (winner !== 2) {
-            renderEnd(arr, player*-1, true);
-            console.log("Type2 winner:", winner);
-            return;
-        }
-        let myString = "";
-        xPlays.map((value) => { myString += value; });
-        xPlaysElement.value = myString;
-        myString = "";
-        oPlays.map((value) => { myString += value; });
-        oPlaysElement.value = myString;
+        player = -1;
     }
+    let xPlays = [...xPlaysElement.value];
+    let oPlays = [...oPlaysElement.value];
+    xPlays = xPlays.map((value) => { return Number(value); });
+    oPlays = oPlays.map((value) => { return Number(value); });
+    let firstValue;
+    arr[cellNumber] = player;
+    cells[cellNumber].innerText = playerLetter;
+    cells[cellNumber].disabled = true;
+    if (playerLetter === "X") {
+        xPlays.push(cellNumber);
+    } else {
+        oPlays.push(cellNumber);
+    }
+    if (xPlays.length > ALLOWABLE_PLAYS) {
+        [firstValue, ...xPlays] = [...xPlays];
+        cells[firstValue].innerText = "";
+        cells[firstValue].disabled = false;
+        arr[firstValue] = 0;
+        cells[firstValue].setAttribute("class", `cell cell${firstValue}`);
+        cells[xPlays[0]].setAttribute("class", `cell cell${xPlays[0]} toremove`);
+    } else if (xPlays.length === ALLOWABLE_PLAYS) {
+        cells[xPlays[0]].setAttribute("class", `cell cell${xPlays[0]} toremove`);
+    }
+    if (oPlays.length > ALLOWABLE_PLAYS) {
+        [firstValue, ...oPlays] = [...oPlays];
+        cells[firstValue].innerText = "";
+        arr[firstValue] = 0;
+        cells[firstValue].disabled = false;
+        cells[firstValue].setAttribute("class", `cell cell${firstValue}`);
+        cells[oPlays[0]].setAttribute("class", `cell cell${oPlays[0]} toremove`);
+    } else if (oPlays.length === ALLOWABLE_PLAYS) {
+        cells[oPlays[0]].setAttribute("class", `cell cell${oPlays[0]} toremove`);
+    }
+    player *= -1;
+    let bestPlay = getBestPlay(arr, xPlays, oPlays, ALLOWABLE_PLAYS, 0, maxForesight, player);
+    if (bestPlay instanceof Object) {
+        console.log("Type1 winner:", bestPlay[0]);
+        renderEnd(arr, player*-1, true);
+        return;
+    }
+    console.log("bestPlay:",bestPlay)
+    arr[bestPlay] = player;
+    cells[bestPlay].innerText = computerLetter;
+    cells[bestPlay].disabled = true;
+    if (playerLetter === "X") {
+        oPlays.push(bestPlay);
+    } else {
+        xPlays.push(bestPlay);
+    }
+    if (xPlays.length > ALLOWABLE_PLAYS) {
+        [firstValue, ...xPlays] = [...xPlays];
+        cells[firstValue].innerText = "";
+        cells[firstValue].disabled = false;
+        arr[firstValue] = 0;
+        cells[firstValue].setAttribute("class", `cell cell${firstValue}`);
+        cells[xPlays[0]].setAttribute("class", `cell cell${xPlays[0]} toremove`);
+    } else if (xPlays.length === ALLOWABLE_PLAYS) {
+        cells[xPlays[0]].setAttribute("class", `cell cell${xPlays[0]} toremove`);
+    }
+    if (oPlays.length > ALLOWABLE_PLAYS) {
+        [firstValue, ...oPlays] = [...oPlays];
+        cells[firstValue].innerText = "";
+        cells[firstValue].disabled = false;
+        arr[firstValue] = 0;
+        cells[firstValue].setAttribute("class", `cell cell${firstValue}`);
+        cells[oPlays[0]].setAttribute("class", `cell cell${oPlays[0]} toremove`);
+    } else if (oPlays.length === ALLOWABLE_PLAYS) {
+        cells[oPlays[0]].setAttribute("class", `cell cell${oPlays[0]} toremove`);
+    }
+    let winner = isEnd(arr);
+    if (winner !== 2) {
+        renderEnd(arr, player*-1, true);
+        console.log("Type2 winner:", winner);
+        return;
+    }
+    let myString = "";
+    xPlays.map((value) => { myString += value; });
+    xPlaysElement.value = myString;
+    myString = "";
+    oPlays.map((value) => { myString += value; });
+    oPlaysElement.value = myString;
 }
 
 function playAsX() {
@@ -514,6 +523,7 @@ function playAsO() {
     let bestPlay = getBestPlay(getArray(), [], [], ALLOWABLE_PLAYS, 0, maxForesight);
     cells[bestPlay].innerText = "X";
     cells[bestPlay].disabled = true;
+    document.getElementById('xPlays').value = String(bestPlay);
 }
 
 function testRegeneration(cellNumber) {
