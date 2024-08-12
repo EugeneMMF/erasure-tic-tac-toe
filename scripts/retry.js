@@ -582,10 +582,8 @@ function testRegeneration(cellNumber) {
 
 function assistEnter(cellNumber) {
     const cells = document.getElementsByClassName('cell');
-    // console.log("Entered");
-    const assistance = document.getElementById("assisted").checked*1 + document.getElementById("superAssisted").checked*2;
-    if (cells[cellNumber].disabled || document.getElementById("noAssist").checked) {
-        // console.log("Disabled");
+    const assistance = Number(document.getElementById("assistance").value);
+    if (cells[cellNumber].disabled || assistance === 0) {
         return;
     }
     let arr = getArray();
@@ -623,14 +621,16 @@ function assistEnter(cellNumber) {
     }
     player *= -1;
     let bestPlay = getBestPlay(arr, xPlays, oPlays, ALLOWABLE_PLAYS, 0, maxForesight, player, true);
+    console.log(`BestPlay => ${bestPlay}`)
     if (bestPlay.length === 2) {
         renderEnd(arr, player*-1, false);
         document.getElementById('compAssistPlay').value = "";
         return;
     } else {
-        let winValue = bestPlay[1]; 
-        bestPlay = bestPlay[0]
-        if (winValue !== 2 && assistance === 2) {
+        let winValue = bestPlay[1];
+        let depthValue = bestPlay[2]; 
+        bestPlay = bestPlay[0];
+        if (winValue !== 2 && depthValue <= assistance) {
             if (winValue === player) {
                 let caution = document.getElementById('caution');
                 caution.innerText = "You will lose!";
@@ -678,9 +678,8 @@ function assistEnter(cellNumber) {
 function assistLeave(cellNumber) {
     const cells = document.getElementsByClassName('cell');
     let compAssistPlay = document.getElementById("compAssistPlay").value;
-    // console.log("Exited");
-    if (cells[cellNumber].disabled || document.getElementById("noAssist").checked) {
-        // console.log("Disabled");
+    const assistance = Number(document.getElementById("assistance").value);
+    if (cells[cellNumber].disabled || assistance === 0) {
         document.getElementById("replaceIndex").value = "";
         document.getElementById('compAssistPlay').value = "";
         return;
@@ -713,6 +712,16 @@ function assistLeave(cellNumber) {
     let canvasWidth = canvas.width;
     let canvasHeight = canvas.height;
     context.clearRect(0, 0, canvasWidth, canvasHeight);
+}
+
+function changeDifficulty(element) {
+    element.previousElementSibling.previousElementSibling.value=element.value
+    const assistance = document.getElementById("assistance");
+    if (assistance.value > element.value) {
+        assistance.value = element.value;
+        assistance.previousElementSibling.previousElementSibling.value=element.value;
+    }
+    assistance.setAttribute("max", element.value);
 }
 
 module.exports.getBestPlay = getBestPlay;
