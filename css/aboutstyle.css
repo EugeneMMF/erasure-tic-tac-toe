@@ -1,0 +1,10 @@
+main {
+    padding: 2rem;
+}
+
+article {
+    border: 1px black solid;
+    border-radius: 1rem;
+    padding: 2rem;
+    font-size: large;
+}

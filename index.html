@@ -9,7 +9,17 @@
 <body>
     <script src="scripts/retry.js"></script>
     <header>
-        <nav>
+        <h1><span>Tic</span>-<span>Tac</span>-<span>Toe</span>-<span>Erasure</span></h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="https://eugenemmf.github.io/tic-tac-toe">Regular Tic-Tac-Toe</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="gameplay">
             <ul>
                 <li><button type="button" id="new-game" onclick="newgame()">New Game</button></li>
             </ul>
@@ -31,9 +41,7 @@
                 <pre></pre>
                 <li><button type="button" onclick="playAsO()">Play as O</button></li>
             </ul>
-        </nav>
-    </header>
-    <main>
+        </div>
         <input type="hidden" name="value" id="playValue" value="">
         <input type="hidden" name="value" id="compValue" value="">
         <input type="hidden" name="computerFuture" id="computerFuturePlay" value="">
@@ -55,5 +63,6 @@
             <button type="button" onclick="play(8)" class="cell cell8" id="cell8"></button>
         </div>
     </main>
+    <footer><small>@Copyright Eugene Mwangi</small></footer>
 </body>
 </html>

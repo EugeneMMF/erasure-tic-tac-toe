@@ -3,26 +3,34 @@
     padding: 0;
 }
 
-nav {
+.gameplay {
     display:grid;
     grid-template-columns: auto 1fr auto;
     grid-template-rows: auto;
+    text-align: center;
+    padding: 50px;
 }
 
-nav ul {
+footer {
+    position: absolute;
+    bottom: 0;
+    align-self: center;
+}
+
+.gameplay ul {
     grid-column: 2/ span 1;
     margin: 0;
     padding: 0;
     margin-top: 1em;
 }
 
-nav li {
+.gameplay li {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-nav li button {
+.gameplay li button {
     color: white;
     background-color: blue;
     border: 0;
@@ -30,13 +38,72 @@ nav li button {
     border-radius: 5px;
     margin: 5px;
 }
+
 header {
     text-align: center;
+    /* position: absolute;
+    top: 0; */
+    align-self: center;
+    padding: 10px;
+    font-size: x-large;
+    background-color: grey;
 }
-body {
+
+nav ul {
+    list-style: none;
+    text-align: center;
+    display: flex;
+    justify-content: space-evenly;
+    background-color: rgb(128, 128, 128);
+    
+}
+
+nav li {
+    display: inline-flex;
+    text-align: center;
+    justify-content: center;
+    border-radius: 2rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 1.5rem;
+}
+
+nav a:hover {
+    color: black;
+    transform: scale(250%);
+    transition: 1s;
+}
+
+header h1 span:nth-child(1) {
+    color: darkgreen;
+}
+
+header h1 span:nth-child(2) {
+    color: rgb(161, 160, 160);
+}
+
+header h1 span:nth-child(3) {
+    color: red;
+}
+
+header h1 span:nth-child(4) {
+    color: rgba(255, 0, 0, 0.39);
+}
+
+main {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    align-content: space-evenly;
+}
+
+body {
     height: 100vh;
 }
 
