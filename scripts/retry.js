@@ -580,7 +580,7 @@ function testRegeneration(cellNumber) {
 
 function assistEnter(cellNumber) {
     const cells = document.getElementsByClassName('cell');
-    if (cells[cellNumber].disabled) {
+    if (cells[cellNumber].disabled || !document.getElementById("assisted").checked) {
         return;
     }
     let arr = getArray();
@@ -626,6 +626,9 @@ function assistEnter(cellNumber) {
     document.getElementById('compAssistPlay').value = bestPlay.toString();
     arr[bestPlay] = player;
     cells[bestPlay].innerText = computerLetter;
+    if ([...cells[bestPlay].classList].indexOf("toremove") != -1) {
+        document.getElementById("replaceIndex").value = bestPlay;
+    }
     cells[bestPlay].setAttribute("class", `cell cell${bestPlay} temporary`);
     if (playerLetter === "X") {
         oPlays.push(bestPlay);
@@ -649,13 +652,20 @@ function assistEnter(cellNumber) {
 function assistLeave(cellNumber) {
     const cells = document.getElementsByClassName('cell');
     let compAssistPlay = document.getElementById("compAssistPlay").value;
-    if (cells[cellNumber].disabled) {
+    if (cells[cellNumber].disabled || !document.getElementById("assisted").checked) {
         return;
     }
     if (compAssistPlay !== "") {
         compAssistPlay = Number(compAssistPlay);
         cells[compAssistPlay].setAttribute("class", `cell cell${compAssistPlay}`);
         cells[compAssistPlay].innerText = "";
+    }
+    let replaceIndex = document.getElementById("replaceIndex").value;
+    if (replaceIndex !== "") {
+        replaceIndex = Number(replaceIndex);
+        cells[replaceIndex].innerText = document.getElementById("playValue").value;
+        cells[replaceIndex].setAttribute("class", `cell cell${replaceIndex} toremove`);
+        document.getElementById("replaceIndex").value = "";
     }
     document.getElementById('compAssistPlay').value = "";
     cells[cellNumber].setAttribute("class", `cell cell${cellNumber}`);
