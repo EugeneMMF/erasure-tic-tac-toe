@@ -580,7 +580,9 @@ function testRegeneration(cellNumber) {
 
 function assistEnter(cellNumber) {
     const cells = document.getElementsByClassName('cell');
+    console.log("Entered");
     if (cells[cellNumber].disabled || !document.getElementById("assisted").checked) {
+        console.log("Disabled");
         return;
     }
     let arr = getArray();
@@ -624,9 +626,11 @@ function assistEnter(cellNumber) {
         return;
     }
     document.getElementById('compAssistPlay').value = bestPlay.toString();
+    console.log(`compAssistPlay: ${bestPlay}`);
     arr[bestPlay] = player;
     cells[bestPlay].innerText = computerLetter;
     if ([...cells[bestPlay].classList].indexOf("toremove") != -1) {
+        console.log(`replaceIndex: ${bestPlay}`);
         document.getElementById("replaceIndex").value = bestPlay;
     }
     cells[bestPlay].setAttribute("class", `cell cell${bestPlay} temporary`);
@@ -652,7 +656,11 @@ function assistEnter(cellNumber) {
 function assistLeave(cellNumber) {
     const cells = document.getElementsByClassName('cell');
     let compAssistPlay = document.getElementById("compAssistPlay").value;
+    console.log("Exited");
     if (cells[cellNumber].disabled || !document.getElementById("assisted").checked) {
+        console.log("Disabled");
+        document.getElementById("replaceIndex").value = "";
+        document.getElementById('compAssistPlay').value = "";
         return;
     }
     if (compAssistPlay !== "") {
@@ -664,6 +672,7 @@ function assistLeave(cellNumber) {
     if (replaceIndex !== "") {
         replaceIndex = Number(replaceIndex);
         cells[replaceIndex].innerText = document.getElementById("playValue").value;
+        console.log("Got you, ha ha ha!");
         cells[replaceIndex].setAttribute("class", `cell cell${replaceIndex} toremove`);
         document.getElementById("replaceIndex").value = "";
     }
