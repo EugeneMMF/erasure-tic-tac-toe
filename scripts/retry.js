@@ -285,8 +285,8 @@ function newgame() {
     }
     document.getElementById('option').hidden = false;
     document.getElementById('result').hidden = true;
+    document.getElementById('caution').hidden = true;
     document.getElementById('playValue').setAttribute('value',"");
-    document.getElementById('firstPlay').setAttribute('value',true);
     document.getElementById('caution').setAttribute("hidden",true);
     document.getElementById("xPlays").value = "";
     document.getElementById("oPlays").value = "";
@@ -296,6 +296,7 @@ function newgame() {
     let canvasWidth = canvas.width;
     let canvasHeight = canvas.height;
     context.clearRect(0, 0, canvasWidth, canvasHeight);
+    console.log("New game");
 }
 
 function getArray() {
@@ -405,6 +406,13 @@ function renderEnd(arr, userPlayer, actualPlay) {
 
 function play(cellNumber) {
     const cells = document.getElementsByClassName('cell');
+    let compAssistPlay = document.getElementById("compAssistPlay").value;
+    if (compAssistPlay !== "") {
+        compAssistPlay = Number(compAssistPlay);
+        cells[compAssistPlay].innerHTML = "";
+        cells[compAssistPlay].setAttribute("class", `cell cell${compAssistPlay}`);
+        document.getElementById("compAssistPlay").value = ""
+    }
     let arr = getArray();
     console.log(arr);
     let player; // = getPlayer(arr);
@@ -426,6 +434,7 @@ function play(cellNumber) {
     arr[cellNumber] = player;
     cells[cellNumber].innerText = playerLetter;
     cells[cellNumber].disabled = true;
+    cells[cellNumber].setAttribute("class", `cell cell${cellNumber}`);
     if (playerLetter === "X") {
         xPlays.push(cellNumber);
     } else {
@@ -567,6 +576,102 @@ function testRegeneration(cellNumber) {
         document.getElementById("player2").value = myString;
         document.getElementById('playValue').value = "X";
     }
+}
+
+function assistEnter(cellNumber) {
+    const cells = document.getElementsByClassName('cell');
+    if (cells[cellNumber].disabled) {
+        return;
+    }
+    let arr = getArray();
+    let player; // = getPlayer(arr);
+    let playerLetter = document.getElementById('playValue').value;
+    let computerLetter = document.getElementById('compValue').value;
+    let maxForesight = Number(document.getElementById('level').value);
+    const xPlaysElement = document.getElementById('xPlays');
+    const oPlaysElement = document.getElementById('oPlays');
+    if (playerLetter === "X") {
+        player = 1;
+    } else {
+        player = -1;
+    }
+    let xPlays = [...xPlaysElement.value];
+    let oPlays = [...oPlaysElement.value];
+    xPlays = xPlays.map((value) => { return Number(value); });
+    oPlays = oPlays.map((value) => { return Number(value); });
+    let firstValue;
+    arr[cellNumber] = player;
+    cells[cellNumber].innerText = playerLetter;
+    cells[cellNumber].setAttribute("class", `cell cell${cellNumber} temporary`);
+    if (playerLetter === "X") {
+        xPlays.push(cellNumber);
+    } else {
+        oPlays.push(cellNumber);
+    }
+    if (xPlays.length > ALLOWABLE_PLAYS) {
+        [firstValue, ...xPlays] = [...xPlays];
+        arr[firstValue] = 0;
+    }
+    if (oPlays.length > ALLOWABLE_PLAYS) {
+        [firstValue, ...oPlays] = [...oPlays];
+        arr[firstValue] = 0;
+    }
+    player *= -1;
+    let bestPlay = getBestPlay(arr, xPlays, oPlays, ALLOWABLE_PLAYS, 0, maxForesight, player);
+    if (bestPlay instanceof Object) {
+        renderEnd(arr, player*-1, false);
+        document.getElementById('compAssistPlay').value = "";
+        return;
+    }
+    document.getElementById('compAssistPlay').value = bestPlay.toString();
+    arr[bestPlay] = player;
+    cells[bestPlay].innerText = computerLetter;
+    cells[bestPlay].setAttribute("class", `cell cell${bestPlay} temporary`);
+    if (playerLetter === "X") {
+        oPlays.push(bestPlay);
+    } else {
+        xPlays.push(bestPlay);
+    }
+    if (xPlays.length > ALLOWABLE_PLAYS) {
+        [firstValue, ...xPlays] = [...xPlays];
+        arr[firstValue] = 0;
+    }
+    if (oPlays.length > ALLOWABLE_PLAYS) {
+        [firstValue, ...oPlays] = [...oPlays];
+        arr[firstValue] = 0;
+    }
+    let winner = isEnd(arr);
+    if (winner !== 2) {
+        renderEnd(arr, player*-1, false);
+    }
+}
+
+function assistLeave(cellNumber) {
+    const cells = document.getElementsByClassName('cell');
+    let compAssistPlay = document.getElementById("compAssistPlay").value;
+    if (cells[cellNumber].disabled) {
+        return;
+    }
+    if (compAssistPlay !== "") {
+        compAssistPlay = Number(compAssistPlay);
+        cells[compAssistPlay].setAttribute("class", `cell cell${compAssistPlay}`);
+        cells[compAssistPlay].innerText = "";
+    }
+    document.getElementById('compAssistPlay').value = "";
+    cells[cellNumber].setAttribute("class", `cell cell${cellNumber}`);
+    cells[cellNumber].innerText = "";
+    document.getElementsByTagName('main')[0].removeAttribute("class");
+    let caution = document.getElementById('caution');
+    let grid = document.getElementById("grid");
+    caution.innerText = "";
+    caution.removeAttribute('class');
+    caution.setAttribute("hidden",true);
+    grid.setAttribute('class', "container");
+    let canvas = document.getElementById('helper');
+    let context = canvas.getContext('2d');
+    let canvasWidth = canvas.width;
+    let canvasHeight = canvas.height;
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
 }
 
 module.exports.getBestPlay = getBestPlay;
