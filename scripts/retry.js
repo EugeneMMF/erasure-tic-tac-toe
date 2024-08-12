@@ -290,7 +290,7 @@ function newgame() {
     document.getElementById('caution').setAttribute("hidden",true);
     document.getElementById("xPlays").value = "";
     document.getElementById("oPlays").value = "";
-    document.getElementsByTagName('body')[0].removeAttribute("class");
+    document.getElementsByTagName('main')[0].removeAttribute("class");
     let canvas = document.getElementById('helper');
     let context = canvas.getContext('2d');
     let canvasWidth = canvas.width;
@@ -320,19 +320,19 @@ function renderEnd(arr, userPlayer, actualPlay) {
         if (sol == userPlayer) {
             const result = document.getElementById('result');
             result.setAttribute('class', 'winner');
-            document.getElementsByTagName('body')[0].setAttribute("class", "greenborderpermanent");
+            document.getElementsByTagName('main')[0].setAttribute("class", "greenborderpermanent");
             result.hidden = false;
             result.innerText = "😊 Congradulations! You Won! 😊";
         } else if (sol == 0) {
             const result = document.getElementById('result');
             result.setAttribute('class','draw');
-            document.getElementsByTagName('body')[0].setAttribute("class", "greyborderpermanent");
+            document.getElementsByTagName('main')[0].setAttribute("class", "greyborderpermanent");
             result.hidden = false;
             result.innerText = "😮‍💨 Draw! 😮‍💨";
         } else {
             const result = document.getElementById('result');
             result.setAttribute('class','loser');
-            document.getElementsByTagName('body')[0].setAttribute("class", "redborderpermanent");
+            document.getElementsByTagName('main')[0].setAttribute("class", "redborderpermanent");
             result.innerText = "☹️ Sorry! Computer wins! ☹️";
             result.hidden = false;
         }
@@ -359,14 +359,14 @@ function renderEnd(arr, userPlayer, actualPlay) {
                     caution.innerText = "You will lose!";
                     caution.setAttribute('class', "losertext");
                     grid.setAttribute('class', "container zoominout");
-                    document.getElementsByTagName('body')[0].setAttribute("class", "redborder");
+                    document.getElementsByTagName('main')[0].setAttribute("class", "redborder");
                     caution.removeAttribute("hidden");
                 } else {
                     context.strokeStyle = "#00ff00";
                     let caution = document.getElementById('caution');
                     caution.innerText = "You will win!"
                     caution.setAttribute('class', "winner");
-                    document.getElementsByTagName('body')[0].setAttribute("class", "greenborder");
+                    document.getElementsByTagName('main')[0].setAttribute("class", "greenborder");
                     caution.removeAttribute("hidden");
                 }
             }
