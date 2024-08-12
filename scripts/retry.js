@@ -151,7 +151,7 @@ function render(arr, prespace="") {
     return myString;
 }
 
-function getBestPlay(arr, xPlays, oPlays, allowablePlays, currentForesight, maxForesight, playerValue) {
+function getBestPlay(arr, xPlays, oPlays, allowablePlays, currentForesight, maxForesight, playerValue, returnEverything=false) {
     // check if there is a winner/draw
     let winner = isEnd(arr);
     if (winner !== 2) {
@@ -267,7 +267,9 @@ function getBestPlay(arr, xPlays, oPlays, allowablePlays, currentForesight, maxF
                 }
             }
         }
-        if (currentForesight === 0) {
+        if (returnEverything) {
+            return [returnIndex, returnWinValue, returnDepthValue];
+        } else if (currentForesight === 0) {
             return returnIndex;
         } else {
             return [returnWinValue, returnDepthValue];
@@ -580,9 +582,10 @@ function testRegeneration(cellNumber) {
 
 function assistEnter(cellNumber) {
     const cells = document.getElementsByClassName('cell');
-    console.log("Entered");
-    if (cells[cellNumber].disabled || !document.getElementById("assisted").checked) {
-        console.log("Disabled");
+    // console.log("Entered");
+    const assistance = document.getElementById("assisted").checked*1 + document.getElementById("superAssisted").checked*2;
+    if (cells[cellNumber].disabled || document.getElementById("noAssist").checked) {
+        // console.log("Disabled");
         return;
     }
     let arr = getArray();
@@ -619,18 +622,37 @@ function assistEnter(cellNumber) {
         arr[firstValue] = 0;
     }
     player *= -1;
-    let bestPlay = getBestPlay(arr, xPlays, oPlays, ALLOWABLE_PLAYS, 0, maxForesight, player);
-    if (bestPlay instanceof Object) {
+    let bestPlay = getBestPlay(arr, xPlays, oPlays, ALLOWABLE_PLAYS, 0, maxForesight, player, true);
+    if (bestPlay.length === 2) {
         renderEnd(arr, player*-1, false);
         document.getElementById('compAssistPlay').value = "";
         return;
+    } else {
+        let winValue = bestPlay[1]; 
+        bestPlay = bestPlay[0]
+        if (winValue !== 2 && assistance === 2) {
+            if (winValue === player) {
+                let caution = document.getElementById('caution');
+                caution.innerText = "You will lose!";
+                caution.setAttribute('class', "losertext");
+                grid.setAttribute('class', "container zoominout");
+                document.getElementsByTagName('main')[0].setAttribute("class", "redborder");
+                caution.removeAttribute("hidden");
+            } else if (winValue === player*-1) {
+                let caution = document.getElementById('caution');
+                caution.innerText = "You could win!";
+                caution.setAttribute('class', "winner");
+                document.getElementsByTagName('main')[0].setAttribute("class", "greenborder");
+                caution.removeAttribute("hidden");
+            }
+        }
     }
     document.getElementById('compAssistPlay').value = bestPlay.toString();
     console.log(`compAssistPlay: ${bestPlay}`);
     arr[bestPlay] = player;
     cells[bestPlay].innerText = computerLetter;
     if ([...cells[bestPlay].classList].indexOf("toremove") != -1) {
-        console.log(`replaceIndex: ${bestPlay}`);
+        // console.log(`replaceIndex: ${bestPlay}`);
         document.getElementById("replaceIndex").value = bestPlay;
     }
     cells[bestPlay].setAttribute("class", `cell cell${bestPlay} temporary`);
@@ -656,9 +678,9 @@ function assistEnter(cellNumber) {
 function assistLeave(cellNumber) {
     const cells = document.getElementsByClassName('cell');
     let compAssistPlay = document.getElementById("compAssistPlay").value;
-    console.log("Exited");
-    if (cells[cellNumber].disabled || !document.getElementById("assisted").checked) {
-        console.log("Disabled");
+    // console.log("Exited");
+    if (cells[cellNumber].disabled || document.getElementById("noAssist").checked) {
+        // console.log("Disabled");
         document.getElementById("replaceIndex").value = "";
         document.getElementById('compAssistPlay').value = "";
         return;

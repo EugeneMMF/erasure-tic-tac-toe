@@ -15,12 +15,9 @@ body {
     grid-template-columns: auto 1fr auto;
     grid-template-rows: auto;
     text-align: center;
-    padding: 50px;
 }
 
 footer {
-    /* position: absolute; */
-    bottom: 0;
     align-self: center;
 }
 
@@ -28,12 +25,12 @@ footer {
     grid-column: 2/ span 1;
     margin: 0;
     padding: 0;
-    margin-top: 1em;
+    /* margin-top: 1em; */
 }
 
 .gameplay li {
     list-style: none;
-    margin: 0;
+    margin: 5px;
     padding: 0;
 }
 
@@ -43,13 +40,10 @@ footer {
     border: 0;
     padding: 10px;
     border-radius: 5px;
-    margin: 5px;
 }
 
 header {
     text-align: center;
-    /* position: absolute;
-    top: 0; */
     align-self: center;
     padding: 10px;
     font-size: x-large;
@@ -237,6 +231,13 @@ td {
 button:disabled{
     color: black;
 }
+
+fieldset {
+    width: max-content;
+    margin: auto;
+    padding: 5px;
+}
+
 #helper{
     z-index: -1;
     width: 100%;
@@ -245,7 +246,7 @@ button:disabled{
     grid-column: 2/ span 3;
 }
 #caution {
-    z-index: 2;
+    z-index: -1;
     margin: auto;
     background-color: transparent;
     grid-column: 2/ span 3;
@@ -298,13 +299,13 @@ button:disabled{
         box-shadow: none;
     }
     25% {
-        box-shadow: inset -100px -100px 100px rgb(233, 140, 140), inset 100px 100px 100px rgb(233, 140, 140);
+        box-shadow: inset -100px -100px 100px rgb(233, 140, 140), inset 100px 100px 100px rgb(233, 140, 140), 100px 100px 100px rgb(233, 140, 140);
     }
     50% {
         box-shadow: none;
     }
     100% {
-        box-shadow: inset -100px -100px 100px rgb(233, 140, 140), inset 100px 100px 100px rgb(233, 140, 140);
+        box-shadow: inset -100px -100px 100px rgb(233, 140, 140), inset 100px 100px 100px rgb(233, 140, 140), 100px 100px 100px rgb(233, 140, 140);
     }
 }
 
@@ -313,13 +314,13 @@ button:disabled{
         box-shadow: none;
     }
     25% {
-        box-shadow: inset -100px -100px 100px #a2f8a2, inset 100px 100px 100px #a2f8a2;
+        box-shadow: inset -100px -100px 100px #a2f8a2, inset 100px 100px 100px #a2f8a2, 100px 100px 100px #a2f8a2;
     }
     50% {
         box-shadow: none;
     }
     100% {
-        box-shadow: inset -100px -100px 100px #a2f8a2, inset 100px 100px 100px #a2f8a2;
+        box-shadow: inset -100px -100px 100px #a2f8a2, inset 100px 100px 100px #a2f8a2, 100px 100px 100px #a2f8a2;
     }
 }
 
