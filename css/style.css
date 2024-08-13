@@ -46,7 +46,7 @@ header {
     text-align: center;
     align-self: center;
     padding: 10px;
-    font-size: x-large;
+    font-size: large;
     background-color: grey;
 }
 
@@ -63,7 +63,6 @@ nav li {
     display: inline-flex;
     text-align: center;
     justify-content: center;
-    border-radius: 2rem;
 }
 
 nav a {
@@ -72,12 +71,12 @@ nav a {
     font-size: 1rem;
     margin-right: auto;
     margin-left: auto;
-    padding: 1.5rem;
+    padding: 0.5rem;
 }
 
 nav a:hover {
     color: black;
-    transform: scale(250%);
+    transform: scale(150%);
     transition: 1s;
 }
 

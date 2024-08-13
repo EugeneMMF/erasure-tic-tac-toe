@@ -299,6 +299,7 @@ function newgame() {
     let canvasHeight = canvas.height;
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     console.log("New game");
+    document.cookie = `assist=0;`;
 }
 
 function getArray() {
@@ -320,25 +321,47 @@ function renderEnd(arr, userPlayer, actualPlay) {
     let [sol, direction, type] = getWinType(arr);
     console.log(sol, direction, type);
     if (actualPlay) {
+        let wins = Number(getCookie("wins"));
+        let games = Number(getCookie("games"));
+        let usedAssist = Number(getCookie("assist"));
+        let level = Number(getCookie("level"));
+        let noOfStars = Number(getCookie("number"));
         if (sol == userPlayer) {
             const result = document.getElementById('result');
             result.setAttribute('class', 'winner');
             document.getElementsByTagName('main')[0].setAttribute("class", "greenborderpermanent");
             result.hidden = false;
             result.innerText = "😊 Congradulations! You Won! 😊";
+            if (usedAssist === 0) {
+                games += 1;
+                wins += 1;
+                level = Math.round((wins/games)*noOfStars);
+            }
         } else if (sol == 0) {
             const result = document.getElementById('result');
             result.setAttribute('class','draw');
             document.getElementsByTagName('main')[0].setAttribute("class", "greyborderpermanent");
             result.hidden = false;
             result.innerText = "😮‍💨 Draw! 😮‍💨";
+            if (usedAssist === 0) {
+                games += 1;
+                level = Math.round((wins/games)*noOfStars);
+            }
         } else {
             const result = document.getElementById('result');
             result.setAttribute('class','loser');
             document.getElementsByTagName('main')[0].setAttribute("class", "redborderpermanent");
             result.innerText = "☹️ Sorry! Computer wins! ☹️";
             result.hidden = false;
+            if (usedAssist === 0) {
+                games += 1;
+                level = Math.round((wins/games)*noOfStars);
+            }
         }
+        document.cookie = `games=${games};`;
+        document.cookie = `wins=${wins};`;
+        document.cookie = `level=${level};`;
+        drawStars();
         const cells = document.getElementsByClassName('cell');
         for (let cell of cells) {
             cell.disabled = true;
@@ -591,6 +614,7 @@ function assistEnter(cellNumber) {
     let playerLetter = document.getElementById('playValue').value;
     let computerLetter = document.getElementById('compValue').value;
     let maxForesight = Number(document.getElementById('level').value);
+    document.cookie = `assist=${assistance};`;
     const xPlaysElement = document.getElementById('xPlays');
     const oPlaysElement = document.getElementById('oPlays');
     if (playerLetter === "X") {
@@ -723,5 +747,87 @@ function changeDifficulty(element) {
     }
     assistance.setAttribute("max", element.value);
 }
+
+function drawStars(level=0) {
+    const canvas = document.getElementById("myCanvas");
+    let context = canvas.getContext('2d');
+    const [width, height] = [canvas.width, canvas.height];
+    context.clearRect(0, 0, width, height);
+    let number;
+    number = Number(getCookie("number"));
+    level = Number(getCookie("level"));
+    if (isNaN(number)) {return;}
+    console.log("Drawing stars:", number, level);
+    const fraction = Math.floor(width/number);
+    const positionY = Math.floor(height/2);
+    let positionX = Math.floor(fraction/2);
+    let value = fraction;
+    let points = []
+    let angle = 90-72;
+    let outerRadius = 0.9*Math.min(positionX, positionY);
+    let innerRadius = 0.3*Math.min(positionX, positionY);
+    context.strokeStyle = "#000000";
+    context.fillStyle = "gold";
+    context.beginPath();
+    for (let i=0; i<number; i++) {
+        angle = 90-72;
+        for (let j=0; j<11; j++) {
+            let x;
+            let y;
+            let angleRadians = angle*Math.PI/180;
+            if ((j%2) == 0) {
+                x = Math.floor(innerRadius * Math.cos(angleRadians) + positionX);
+                y = Math.floor(innerRadius * Math.sin(angleRadians) + positionY);
+            } else {
+                x = Math.floor(outerRadius * Math.cos(angleRadians) + positionX);
+                y = Math.floor(outerRadius * Math.sin(angleRadians) + positionY);
+            }
+            if (j == 0) {
+                context.moveTo(x,y);
+            } else {
+                context.lineTo(x,y);
+        context.stroke();
+            }
+            angle += 36;
+        }
+        if (i<level) {
+            console.log("filling");
+            context.fill();
+        }
+        positionX += value;
+    }
+}
+
+function getCookie(cname) {
+    let name = cname+"=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ind = decodedCookie.indexOf(name);
+    if (ind == -1) {return "";}
+    decodedCookie = decodedCookie.substring(ind);
+    let ca = decodedCookie.split(';')[0].replace(name,"");
+    return ca;
+}
+
+if (getCookie("number") == "") {
+    document.cookie = "number=5;";
+}
+if (getCookie("level") == "") {
+    document.cookie = "level=0;";
+}
+if (getCookie("games") == "") {
+    document.cookie = "games=0;";
+}
+if (getCookie("wins") == "") {
+    document.cookie = "wins=0;";
+}
+if (getCookie("assist") == "") {
+    document.cookie = "assist=0;";
+}
+// document.cookie = "number=5;";
+// document.cookie = "level=0;";
+// document.cookie = "games=0;"
+// document.cookie = "wins=0;";
+// document.cookie = "assist=0;";
+drawStars();
 
 module.exports.getBestPlay = getBestPlay;
