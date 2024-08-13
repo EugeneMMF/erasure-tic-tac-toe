@@ -751,16 +751,15 @@ function changeDifficulty(element) {
 function drawStars(level=0) {
     const canvas = document.getElementById("myCanvas");
     let context = canvas.getContext('2d');
-    const [width, height] = [canvas.width, canvas.height];
+    const {width, height} = canvas.getBoundingClientRect();
     context.clearRect(0, 0, width, height);
     let number;
     number = Number(getCookie("number"));
     level = Number(getCookie("level"));
     if (isNaN(number)) {return;}
-    console.log("Drawing stars:", number, level);
-    const fraction = Math.floor(width/number);
-    const positionY = Math.floor(height/2);
-    let positionX = Math.floor(fraction/2);
+    const fraction = width/number;
+    const positionY = height/2;
+    let positionX = fraction/2;
     let value = fraction;
     let points = []
     let angle = 90-72;
@@ -776,11 +775,11 @@ function drawStars(level=0) {
             let y;
             let angleRadians = angle*Math.PI/180;
             if ((j%2) == 0) {
-                x = Math.floor(innerRadius * Math.cos(angleRadians) + positionX);
-                y = Math.floor(innerRadius * Math.sin(angleRadians) + positionY);
+                x = Math.round(innerRadius * Math.cos(angleRadians) + positionX);
+                y = Math.round(innerRadius * Math.sin(angleRadians) + positionY);
             } else {
-                x = Math.floor(outerRadius * Math.cos(angleRadians) + positionX);
-                y = Math.floor(outerRadius * Math.sin(angleRadians) + positionY);
+                x = Math.round(outerRadius * Math.cos(angleRadians) + positionX);
+                y = Math.round(outerRadius * Math.sin(angleRadians) + positionY);
             }
             if (j == 0) {
                 context.moveTo(x,y);
@@ -791,7 +790,6 @@ function drawStars(level=0) {
             angle += 36;
         }
         if (i<level) {
-            console.log("filling");
             context.fill();
         }
         positionX += value;
@@ -828,6 +826,34 @@ if (getCookie("assist") == "") {
 // document.cookie = "games=0;"
 // document.cookie = "wins=0;";
 // document.cookie = "assist=0;";
+
+function renderCanvas() {
+    let match = window.matchMedia("(max-width: 500px)");
+    let listItem = document.getElementById("canvasDiv");
+    for (let node of listItem.childNodes){
+        listItem.removeChild(node);
+    }
+    let element = document.createElement("canvas");
+    element.setAttribute("id", "myCanvas");
+    if (match.matches) {
+        element.setAttribute("width", "75px");
+        element.setAttribute("height", "15px");
+        listItem.appendChild(element);
+    } else {
+        element.setAttribute("width", "150px");
+        element.setAttribute("height", "30px");
+        listItem.appendChild(element);
+    }
+}
+
+function fullRedraw() {
+    renderCanvas();
+    drawStars();
+}
+
+renderCanvas()
 drawStars();
 
-module.exports.getBestPlay = getBestPlay;
+window.addEventListener('resize', fullRedraw);
+
+// module.exports.getBestPlay = getBestPlay;

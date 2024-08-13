@@ -56,7 +56,7 @@ nav ul {
     display: flex;
     justify-content: space-evenly;
     background-color: rgb(128, 128, 128);
-    
+    align-items: center;
 }
 
 nav li {
