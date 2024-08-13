@@ -31,10 +31,10 @@
             </ul>
             <ul>
                 <li>
-                    <label for="level">Difficulty</label><br>
-                    <input type="range" name="level" id="level" min="1" max="7" list="levelValues">
-                    <datalist id="levelValues" style="writing-mode: vertical-lr;">
-                        <option value="1"></option>
+                    <label for="level">Difficulty: </label><output>1</output><br>
+                    <input type="range" name="level" id="level" min="1" max="7" list="levelValues" value="1" oninput="changeDifficulty(this)" autocomplete="off">
+                    <datalist id="levelValues">
+                        <option value="1" default></option>
                         <option value="2"></option>
                         <option value="3"></option>
                         <option value="4"></option>
@@ -44,15 +44,18 @@
                     </datalist>
                 </li>
                 <li>
-                    <fieldset>
-                        <legend>Select an assistance level</legend>
-                        <input type="radio" name="assisted" id="noAssist">
-                        <label for="noAssist">No Assistance</label>
-                        <input type="radio" name="assisted" id="assisted">
-                        <label for="assisted">Lightly Assisted</label>
-                        <input type="radio" name="assisted" id="superAssisted">
-                        <label for="superAssisted">Heavily Assisted</label>
-                    </fieldset>
+                    <label for="assistance">Assistance: </label><output>0</output><br>
+                    <input type="range" name="assistance" id="assistance" min="0" max="1" list="assistanceValues" value="0" oninput="this.previousElementSibling.previousElementSibling.value=this.value" autocomplete="off">
+                    <datalist id="assistanceValues">
+                        <option value="0" default></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                        <option value="6"></option>
+                        <option value="7"></option>
+                    </datalist>
                 </li>
             </ul>
         </div>
