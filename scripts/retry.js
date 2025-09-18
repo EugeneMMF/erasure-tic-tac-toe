@@ -325,7 +325,7 @@ function renderEnd(arr, userPlayer, actualPlay) {
             result.setAttribute('class', 'winner');
             document.getElementsByTagName('main')[0].setAttribute("class", "greenborderpermanent");
             result.hidden = false;
-            result.innerText = "😊 Congradulations! You Won! 😊";
+            result.innerText = "😊 Congratulations! You Won! 😊";
         } else if (sol == 0) {
             const result = document.getElementById('result');
             result.setAttribute('class','draw');
